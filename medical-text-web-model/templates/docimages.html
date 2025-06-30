@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Medical AI Images & Explanations{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h2 class="section-title">Medical AI Images & Explanations</h2>
+    <div class="row g-4 justify-content-center">
+        {% for img in images %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card h-100 shadow-sm">
+                <img src="{{ url_for('static', filename='images/' + img.filename) }}" class="card-img-top img-fluid" alt="{{ img.caption }}" style="max-height:320px; object-fit:cover;">
+                <div class="card-body">
+                    <p class="card-text">{{ img.caption }}</p>
+                    <p class="card-text"><small class="text-muted">{{ img.explanation }}</small></p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <div class="text-center mt-4">
+        <a href="{{ url_for('home') }}" class="btn btn-primary"><i class="fas fa-arrow-left me-2"></i>Back to Home</a>
+    </div>
+</div>
+{% endblock %} 

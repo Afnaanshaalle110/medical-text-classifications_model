@@ -1,0 +1,334 @@
+{% extends "base.html" %}
+
+{% block title %}MedClassify - Medical Specialty Classification{% endblock %}
+
+{% block additional_css %}
+/* Enhanced pure CSS for home page */
+.hero {
+    background: linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 100%);
+    padding: 5rem 0 4rem 0;
+    margin-bottom: 4rem;
+    border-radius: 24px;
+    box-shadow: 0 4px 24px rgba(37,99,235,0.08);
+}
+.hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.hero-subtitle {
+    font-size: 1.5rem;
+    color: #4b5563;
+    margin-bottom: 2rem;
+}
+.hero-btn {
+    padding: 1rem 2.5rem;
+    font-size: 1.2rem;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    border: none;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+}
+.hero-btn:hover {
+    background: linear-gradient(135deg, #1e40af, #2563eb);
+    box-shadow: 0 4px 16px rgba(37,99,235,0.12);
+    transform: translateY(-2px) scale(1.03);
+}
+.feature-card {
+    height: 100%;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.08);
+    background: white;
+    overflow: hidden;
+    transition: box-shadow 0.3s, transform 0.3s;
+    margin-bottom: 24px;
+}
+.feature-card:hover {
+    box-shadow: 0 8px 32px rgba(37,99,235,0.12);
+    transform: translateY(-4px) scale(1.01);
+}
+.feature-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: transform 0.3s;
+}
+.feature-card:hover .feature-icon {
+    transform: scale(1.1);
+}
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.section-subtitle {
+    color: #6b7280;
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    text-align: center;
+}
+.process-card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.08);
+    background: white;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+.process-card:hover {
+    box-shadow: 0 8px 32px rgba(37,99,235,0.12);
+    transform: translateY(-2px) scale(1.01);
+}
+.process-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 16px;
+    transition: transform 0.3s;
+}
+.process-img:hover {
+    transform: scale(1.02);
+}
+.specialty-preview-card {
+    height: 100%;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.08);
+    background: white;
+    overflow: hidden;
+    margin-bottom: 24px;
+}
+.specialty-preview-card:hover {
+    box-shadow: 0 8px 32px rgba(37,99,235,0.12);
+    transform: translateY(-2px) scale(1.01);
+}
+.specialty-preview-icon {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.specialty-preview-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1f2937;
+}
+.learn-more-btn {
+    padding: 0.75rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    border: 2px solid #2563eb;
+    color: #2563eb;
+    text-decoration: none;
+    display: inline-block;
+    transition: background 0.3s, color 0.3s, transform 0.2s;
+    font-weight: 500;
+    margin-top: 2rem;
+    background: #fff;
+}
+.learn-more-btn:hover {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: #fff;
+    transform: translateY(-2px);
+}
+@media (max-width: 600px) {
+    .hero {
+        padding: 2rem 0 1.5rem 0;
+        border-radius: 12px;
+    }
+    .hero-title {
+        font-size: 2rem;
+    }
+    .feature-card, .process-card, .specialty-preview-card {
+        border-radius: 10px;
+        margin-bottom: 16px;
+    }
+}
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero">
+    <div class="p-2 container text-center color-white">
+        <h1 class="hero-title">Medical Specialty Classification</h1>
+        <p class="hero-subtitle">Quickly identify the appropriate medical specialty based on transcription text using our intelligent analysis system</p>
+        <a href="{{ url_for('classifier') }}" class="hero-btn hover: text-white">
+            <i class="fas fa-magic me-2"></i>Try the Classifier
+        </a> <br> <br>
+        <a href="{{ url_for('docimages') }}" class=" hero-btn hover: text-white">
+            <i class="fas fa-magic me-2"></i>docimages
+        </a>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="container mb-5">
+    <h2 class="section-title text-center">Key Features</h2>
+    <p class="section-subtitle text-center">Discover what makes our medical text classifier unique</p>
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-4">
+            <div class="card feature-card">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="h4 mb-3">Instant Classification</h3>
+                    <p class="text-muted mb-0">Get immediate results with our advanced classification system that analyzes medical text in real-time.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card feature-card">
+                <div class="card-body text-center p-4">
+                    <div class="feature-icon">
+                        <i class="fas fa-laptop-medical"></i>
+                    </div>
+                    <h3 class="h4 mb-3">Easy to Use</h3>
+                    <p class="text-muted mb-0">Modern, intuitive interface that works seamlessly across all devices and browsers.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- How It Works Section -->
+<section class="container mb-5">
+    <h2 class="section-title text-center">How It Works</h2>
+    <p class="section-subtitle text-center">Understanding our classification process</p>
+    <div class="row align-items-center g-4">
+        <div class="col-lg-6">
+            <img src="https://placehold.co/600x400/e2e8f0/1e40af?text=Classification+Process" 
+                 class="process-img" alt="Classification Process">
+        </div>
+        <div class="col-lg-6">
+            <div class="card process-card">
+                <div class="card-body p-4">
+                    <h3 class="h4 mb-4">Our Classification Process</h3>
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="feature-icon me-3" style="font-size: 1.5rem;">
+                            <i class="fas fa-keyboard"></i>
+                        </div>
+                        <div>
+                            <h4 class="h5 mb-2">Input Text</h4>
+                            <p class="text-muted mb-0">Enter medical transcription text into the classifier</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start mb-3">
+                        <div class="feature-icon me-3" style="font-size: 1.5rem;">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div>
+                            <h4 class="h5 mb-2">Keyword Analysis</h4>
+                            <p class="text-muted mb-0">Our algorithm analyzes specialty-specific keywords</p>
+                        </div>
+                    </div>
+                    <div class="d-flex align-items-start">
+                        <div class="feature-icon me-3" style="font-size: 1.5rem;">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <div>
+                            <h4 class="h5 mb-2">Results Display</h4>
+                            <p class="text-muted mb-0">View detailed results with probability distribution</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Specialties Preview Section -->
+<section class="container mb-5">
+    <h2 class="section-title text-center">Medical Specialties</h2>
+    <p class="section-subtitle text-center">Explore the different medical specialties we can identify</p>
+    <div class="row row-cols-2 row-cols-md-3 g-4">
+        <div class="col">
+            <div class="specialty-preview-card">
+                <div class="card-body text-center p-4">
+                    <div class="specialty-preview-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h5 class="specialty-preview-title">Cardiology</h5>
+                    <p class="text-muted mb-0">Heart and cardiovascular system disorders</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="specialty-preview-card">
+                <div class="card-body text-center p-4">
+                    <div class="specialty-preview-icon">
+                        <i class="fas fa-bone"></i>
+                    </div>
+                    <h5 class="specialty-preview-title">Orthopedics</h5>
+                    <p class="text-muted mb-0">Musculoskeletal system and bone disorders</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="specialty-preview-card">
+                <div class="card-body text-center p-4">
+                    <div class="specialty-preview-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h5 class="specialty-preview-title">Neurology</h5>
+                    <p class="text-muted mb-0">Brain, spinal cord, and nervous system disorders</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="specialty-preview-card">
+                <div class="card-body text-center p-4">
+                    <div class="specialty-preview-icon">
+                        <i class="fas fa-child"></i>
+                    </div>
+                    <h5 class="specialty-preview-title">Pediatrics</h5>
+                    <p class="text-muted mb-0">Medical care for infants, children, and adolescents</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="specialty-preview-card">
+                <div class="card-body text-center p-4">
+                    <div class="specialty-preview-icon">
+                        <i class="fas fa-allergies"></i>
+                    </div>
+                    <h5 class="specialty-preview-title">Dermatology</h5>
+                    <p class="text-muted mb-0">Skin, hair, and nail disorders</p>
+                </div>
+            </div>
+        </div>
+        <div class="col">
+            <div class="specialty-preview-card">
+                <div class="card-body text-center p-4">
+                    <div class="specialty-preview-icon">
+                        <i class="fas fa-procedures"></i>
+                    </div>
+                    <h5 class="specialty-preview-title">General Surgery</h5>
+                    <p class="text-muted mb-0">Surgical procedures and interventions</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="text-center">
+        <a href="{{ url_for('specialties') }}" class="learn-more-btn">
+            <i class="fas fa-info-circle me-2"></i>Learn More About Specialties
+        </a>
+    </div>
+</section>
+{% endblock %} 

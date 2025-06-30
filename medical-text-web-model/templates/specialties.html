@@ -1,0 +1,390 @@
+{% extends "base.html" %}
+
+{% block title %}Medical Specialties - MedClassify{% endblock %}
+
+{% block additional_css %}
+.specialty-header {
+    background: linear-gradient(135deg, rgba(37, 99, 235, 0.1), rgba(30, 64, 175, 0.1));
+    padding: 3rem 0;
+    margin-bottom: 3rem;
+    border-radius: 20px;
+}
+.specialty-section {
+    padding: 2rem 0;
+    border-bottom: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+.specialty-section:last-child {
+    border-bottom: none;
+}
+.specialty-section:hover {
+    transform: translateY(-5px);
+}
+.specialty-icon {
+    font-size: 3.5rem;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: transform 0.3s ease;
+}
+.specialty-section:hover .specialty-icon {
+    transform: scale(1.1);
+}
+.keyword-badge {
+    margin: 0.3rem;
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 20px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    color: white;
+    border: none;
+    transition: all 0.3s ease;
+}
+.keyword-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+.specialty-title {
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.condition-list {
+    list-style: none;
+    padding: 0;
+}
+.condition-list li {
+    padding: 0.5rem 0;
+    display: flex;
+    align-items: center;
+}
+.condition-list li:before {
+    content: '•';
+    color: var(--primary-color);
+    font-weight: bold;
+    margin-right: 0.5rem;
+}
+.specialty-description {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: #4b5563;
+}
+.try-classifier-btn {
+    margin-top: 2rem;
+    padding: 1rem 2rem;
+    font-size: 1.1rem;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+    border: none;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+.try-classifier-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    color: white;
+}
+{% endblock %}
+
+{% block content %}
+<!-- Header -->
+<div class="container">
+    <header class="specialty-header text-center">
+        <h1 class="section-title">Medical Specialties</h1>
+        <p class="lead mb-0">Explore the different medical specialties our classifier can identify</p>
+    </header>
+
+    <!-- Specialties Content -->
+    <div class="specialty-sections">
+        <!-- Cardiology -->
+        <section id="cardiology" class="specialty-section">
+            <div class="row align-items-center">
+                <div class="col-md-4 text-center">
+                    <div class="specialty-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h2 class="specialty-title">Cardiology</h2>
+                    <p class="text-muted">Heart and cardiovascular system</p>
+                </div>
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="mb-4">About Cardiology</h3>
+                            <p class="specialty-description">Cardiology is a branch of medicine that deals with disorders of the heart and cardiovascular system. Cardiologists are specialists who diagnose, assess, and treat patients with diseases and defects of the heart and blood vessels.</p>
+                            
+                            <h4 class="mb-3">Common Conditions</h4>
+                            <ul class="condition-list mb-4">
+                                <li>Coronary artery disease</li>
+                                <li>Heart failure</li>
+                                <li>Arrhythmias</li>
+                                <li>Valvular heart disease</li>
+                                <li>Hypertension</li>
+                                <li>Congenital heart defects</li>
+                            </ul>
+                            
+                            <h4 class="mb-3">Keywords for Classification</h4>
+                            <div class="keyword-badges">
+                                <span class="keyword-badge">heart</span>
+                                <span class="keyword-badge">chest pain</span>
+                                <span class="keyword-badge">ecg</span>
+                                <span class="keyword-badge">ekg</span>
+                                <span class="keyword-badge">cardiac</span>
+                                <span class="keyword-badge">arrhythmia</span>
+                                <span class="keyword-badge">palpitation</span>
+                                <span class="keyword-badge">hypertension</span>
+                                <span class="keyword-badge">blood pressure</span>
+                                <span class="keyword-badge">coronary</span>
+                                <span class="keyword-badge">atrial fibrillation</span>
+                                <span class="keyword-badge">myocardial</span>
+                                <span class="keyword-badge">st elevation</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Orthopedics -->
+        <section id="orthopedics" class="specialty-section">
+            <div class="row align-items-center">
+                <div class="col-md-4 text-center">
+                    <div class="specialty-icon">
+                        <i class="fas fa-bone"></i>
+                    </div>
+                    <h2 class="specialty-title">Orthopedics</h2>
+                    <p class="text-muted">Musculoskeletal system and bones</p>
+                </div>
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="mb-4">About Orthopedics</h3>
+                            <p class="specialty-description">Orthopedics is the branch of medicine concerned with the study and treatment of the musculoskeletal system, particularly the spine, joints, and muscles. Orthopedic surgeons use both surgical and nonsurgical approaches to treat musculoskeletal trauma, sports injuries, degenerative diseases, infections, tumors, and congenital disorders.</p>
+                            
+                            <h4 class="mb-3">Common Conditions</h4>
+                            <ul class="condition-list mb-4">
+                                <li>Arthritis</li>
+                                <li>Osteoporosis</li>
+                                <li>Fractures</li>
+                                <li>Joint pain</li>
+                                <li>Spine disorders</li>
+                                <li>Sports injuries</li>
+                            </ul>
+                            
+                            <h4 class="mb-3">Keywords for Classification</h4>
+                            <div class="keyword-badges">
+                                <span class="keyword-badge">bone</span>
+                                <span class="keyword-badge">joint</span>
+                                <span class="keyword-badge">fracture</span>
+                                <span class="keyword-badge">sprain</span>
+                                <span class="keyword-badge">arthritis</span>
+                                <span class="keyword-badge">knee</span>
+                                <span class="keyword-badge">hip</span>
+                                <span class="keyword-badge">osteoarthritis</span>
+                                <span class="keyword-badge">x-ray</span>
+                                <span class="keyword-badge">cast</span>
+                                <span class="keyword-badge">orthopedic</span>
+                                <span class="keyword-badge">spine</span>
+                                <span class="keyword-badge">vertebra</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Neurology -->
+        <section id="neurology" class="specialty-section">
+            <div class="row align-items-center">
+                <div class="col-md-4 text-center">
+                    <div class="specialty-icon">
+                        <i class="fas fa-brain"></i>
+                    </div>
+                    <h2 class="specialty-title">Neurology</h2>
+                    <p class="text-muted">Brain and nervous system</p>
+                </div>
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="mb-4">About Neurology</h3>
+                            <p class="specialty-description">Neurology is the branch of medicine dealing with the diagnosis and treatment of all categories of conditions and diseases involving the central and peripheral nervous systems. Neurologists manage and treat neurological conditions, or problems with the nervous system.</p>
+                            
+                            <h4 class="mb-3">Common Conditions</h4>
+                            <ul class="condition-list mb-4">
+                                <li>Headaches and migraines</li>
+                                <li>Epilepsy</li>
+                                <li>Stroke</li>
+                                <li>Multiple sclerosis</li>
+                                <li>Parkinson's disease</li>
+                                <li>Alzheimer's disease</li>
+                            </ul>
+                            
+                            <h4 class="mb-3">Keywords for Classification</h4>
+                            <div class="keyword-badges">
+                                <span class="keyword-badge">brain</span>
+                                <span class="keyword-badge">headache</span>
+                                <span class="keyword-badge">migraine</span>
+                                <span class="keyword-badge">seizure</span>
+                                <span class="keyword-badge">neurological</span>
+                                <span class="keyword-badge">stroke</span>
+                                <span class="keyword-badge">visual aura</span>
+                                <span class="keyword-badge">nerve</span>
+                                <span class="keyword-badge">cognitive</span>
+                                <span class="keyword-badge">memory</span>
+                                <span class="keyword-badge">tremor</span>
+                                <span class="keyword-badge">parkinson</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pediatrics -->
+        <section id="pediatrics" class="specialty-section">
+            <div class="row align-items-center">
+                <div class="col-md-4 text-center">
+                    <div class="specialty-icon">
+                        <i class="fas fa-child"></i>
+                    </div>
+                    <h2 class="specialty-title">Pediatrics</h2>
+                    <p class="text-muted">Children's health</p>
+                </div>
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="mb-4">About Pediatrics</h3>
+                            <p class="specialty-description">Pediatrics is the branch of medicine that involves the medical care of infants, children, and adolescents. Pediatricians work to reduce infant and child mortality, control infectious disease, foster healthy lifestyles, and ease the difficulties of children with chronic conditions.</p>
+                            
+                            <h4 class="mb-3">Common Conditions</h4>
+                            <ul class="condition-list mb-4">
+                                <li>Respiratory infections</li>
+                                <li>Ear infections</li>
+                                <li>Developmental disorders</li>
+                                <li>Childhood vaccinations</li>
+                                <li>Growth issues</li>
+                                <li>Childhood diseases</li>
+                            </ul>
+                            
+                            <h4 class="mb-3">Keywords for Classification</h4>
+                            <div class="keyword-badges">
+                                <span class="keyword-badge">child</span>
+                                <span class="keyword-badge">infant</span>
+                                <span class="keyword-badge">pediatric</span>
+                                <span class="keyword-badge">fever</span>
+                                <span class="keyword-badge">vaccination</span>
+                                <span class="keyword-badge">growth</span>
+                                <span class="keyword-badge">developmental</span>
+                                <span class="keyword-badge">tonsil</span>
+                                <span class="keyword-badge">ear infection</span>
+                                <span class="keyword-badge">rash</span>
+                                <span class="keyword-badge">cough</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Dermatology -->
+        <section id="dermatology" class="specialty-section">
+            <div class="row align-items-center">
+                <div class="col-md-4 text-center">
+                    <div class="specialty-icon">
+                        <i class="fas fa-allergies"></i>
+                    </div>
+                    <h2 class="specialty-title">Dermatology</h2>
+                    <p class="text-muted">Skin, hair, and nails</p>
+                </div>
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="mb-4">About Dermatology</h3>
+                            <p class="specialty-description">Dermatology is the branch of medicine dealing with the skin, nails, hair and its diseases. It is a specialty with both medical and surgical aspects. A dermatologist is a specialist doctor who manages diseases related to skin, hair, nails, and some cosmetic problems.</p>
+                            
+                            <h4 class="mb-3">Common Conditions</h4>
+                            <ul class="condition-list mb-4">
+                                <li>Acne</li>
+                                <li>Eczema</li>
+                                <li>Psoriasis</li>
+                                <li>Skin cancer</li>
+                                <li>Dermatitis</li>
+                                <li>Hair loss</li>
+                            </ul>
+                            
+                            <h4 class="mb-3">Keywords for Classification</h4>
+                            <div class="keyword-badges">
+                                <span class="keyword-badge">skin</span>
+                                <span class="keyword-badge">rash</span>
+                                <span class="keyword-badge">dermatitis</span>
+                                <span class="keyword-badge">acne</span>
+                                <span class="keyword-badge">eczema</span>
+                                <span class="keyword-badge">psoriasis</span>
+                                <span class="keyword-badge">mole</span>
+                                <span class="keyword-badge">itching</span>
+                                <span class="keyword-badge">melanoma</span>
+                                <span class="keyword-badge">dermatological</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- General Surgery -->
+        <section id="general-surgery" class="specialty-section">
+            <div class="row align-items-center">
+                <div class="col-md-4 text-center">
+                    <div class="specialty-icon">
+                        <i class="fas fa-procedures"></i>
+                    </div>
+                    <h2 class="specialty-title">General Surgery</h2>
+                    <p class="text-muted">Surgical procedures</p>
+                </div>
+                <div class="col-md-8">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="mb-4">About General Surgery</h3>
+                            <p class="specialty-description">General surgery is a surgical specialty that focuses on abdominal contents including the esophagus, stomach, small intestine, large intestine, liver, pancreas, gallbladder, appendix and bile ducts, and often the thyroid gland. General surgeons perform a wide range of procedures and often deal with emergency situations.</p>
+                            
+                            <h4 class="mb-3">Common Procedures</h4>
+                            <ul class="condition-list mb-4">
+                                <li>Appendectomy</li>
+                                <li>Cholecystectomy (gallbladder removal)</li>
+                                <li>Hernia repair</li>
+                                <li>Colon surgery</li>
+                                <li>Laparoscopic procedures</li>
+                                <li>Trauma surgery</li>
+                            </ul>
+                            
+                            <h4 class="mb-3">Keywords for Classification</h4>
+                            <div class="keyword-badges">
+                                <span class="keyword-badge">surgery</span>
+                                <span class="keyword-badge">appendicitis</span>
+                                <span class="keyword-badge">gallbladder</span>
+                                <span class="keyword-badge">hernia</span>
+                                <span class="keyword-badge">appendix</span>
+                                <span class="keyword-badge">abdominal pain</span>
+                                <span class="keyword-badge">surgical</span>
+                                <span class="keyword-badge">incision</span>
+                                <span class="keyword-badge">laparoscopic</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="text-center">
+            <a href="{{ url_for('classifier') }}" class="try-classifier-btn">
+                <i class="fas fa-magic me-2"></i>Try the Classifier
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %} 

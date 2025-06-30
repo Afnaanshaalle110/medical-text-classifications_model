@@ -1,0 +1,392 @@
+{% extends "base.html" %}
+
+{% block title %}Medical Specialty Classifier{% endblock %}
+
+{% block additional_css %}
+/* Enhanced pure CSS for classifier page */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 16px;
+}
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.card {
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.08), 0 1.5px 4px rgba(30,64,175,0.06);
+    background: #fff;
+    margin-bottom: 32px;
+    overflow: hidden;
+    transition: box-shadow 0.3s, transform 0.3s;
+}
+.card:hover {
+    box-shadow: 0 8px 32px rgba(37,99,235,0.12), 0 3px 8px rgba(30,64,175,0.10);
+    transform: translateY(-2px) scale(1.01);
+}
+.card-header {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    padding: 1rem 1.5rem;
+    font-size: 1.2rem;
+}
+.card-body {
+    padding: 2rem 1.5rem;
+}
+.btn-primary {
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 1.1rem;
+    padding: 0.9rem 2rem;
+    transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+    box-shadow: 0 2px 8px rgba(37,99,235,0.08);
+}
+.btn-primary:hover {
+    background: linear-gradient(135deg, #1e40af, #2563eb);
+    box-shadow: 0 4px 16px rgba(37,99,235,0.12);
+    transform: translateY(-2px) scale(1.03);
+}
+textarea.form-control {
+    min-height: 160px;
+    border-radius: 10px;
+    border: 2px solid #e5e7eb;
+    padding: 1rem;
+    font-size: 1.1rem;
+    transition: border 0.3s, box-shadow 0.3s;
+    resize: vertical;
+}
+textarea.form-control:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37,99,235,0.08);
+    outline: none;
+}
+.result-card {
+    display: none;
+}
+#resultCard[style*="display: block"] {
+    display: block !important;
+    animation: fadeIn 0.5s;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+strong#predictedSpecialty {
+    color: #10B981;
+    font-size: 1.3em;
+    background: #f0f9f5;
+    padding: 8px 16px;
+    border-radius: 6px;
+    border: 2px solid #10B981;
+    display: inline-block;
+    margin-top: 8px;
+}
+.alert-success {
+    background: #e6f9f0;
+    color: #059669;
+    border-left: 5px solid #10B981;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+.alert-danger {
+    background: #fbeaea;
+    color: #b91c1c;
+    border-left: 5px solid #ef4444;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+.alert-info {
+    background: #e0e7ff;
+    color: #3730a3;
+    border-left: 5px solid #6366f1;
+    padding: 1rem 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+.sample-text {
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: 10px;
+    background: #f1f5f9;
+    color: #1e293b;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.sample-text:hover {
+    background: #dbeafe;
+    transform: translateX(5px);
+}
+.list-group-item-action {
+    border: none;
+    background: none;
+}
+.text-success {
+    color: #059669 !important;
+}
+.text-danger {
+    color: #b91c1c !important;
+}
+.text-info {
+    color: #2563eb !important;
+}
+.d-grid {
+    display: grid;
+}
+@media (max-width: 600px) {
+    .container {
+        padding: 12px 2px;
+    }
+    .card-body {
+        padding: 1rem 0.5rem;
+    }
+}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1 class="section-title mb-5">Medical Specialty Classification</h1>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5 class="mb-0">
+                <i class="fas fa-keyboard me-2"></i>Enter Medical Transcription
+            </h5>
+        </div>
+        <div class="card-body">
+            <form id="classificationForm">
+                <div class="mb-4">
+                    <textarea class="form-control" id="medicalText" name="text" 
+                        placeholder="Enter medical transcription text here..." required></textarea>
+                </div>
+                <div class="d-grid">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-magic me-2"></i>Classify Text
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <div class="card result-card mb-4" id="resultCard">
+        <div class="card-header bg-success">
+            <h5 class="mb-0">
+                <i class="fas fa-chart-pie me-2"></i>Classification Results
+            </h5>
+        </div>
+        <div class="card-body">
+            <h4 class="mb-4">Predicted Specialty: 
+                <strong id="predictedSpecialty" style="color: #10B981; font-size: 1.3em; background: #f0f9f5; padding: 8px 16px; border-radius: 6px; border: 2px solid #10B981;">Not classified yet</strong>
+            </h4>
+            
+            <!-- Backup display for debugging - will be hidden once main works -->
+            <div id="specialtyBackup" style="display: none; margin-bottom: 1rem;">
+                <p class="text-success"><strong>Debug - Specialty detected:</strong> <span id="specialtyText">N/A</span></p>
+            </div>
+            
+            <h5 class="mb-3">
+                <i class="fas fa-info-circle me-2"></i>Classification Details
+            </h5>
+            <div id="probabilitiesContainer">
+                <!-- Probabilities will be inserted here -->
+            </div>
+        </div>
+    </div>
+    
+  
+</div>
+{% endblock %}
+
+{% block additional_scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Function to classify text using FastAPI backend
+        async function classifyText(text) {
+            try {
+                const response = await fetch('/api/predict', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ text: text })
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.detail || data.error || 'Classification failed');
+                }
+                
+                return {
+                    specialty: data.specialty,
+                    confidence: data.confidence || 0
+                };
+                
+            } catch (error) {
+                console.error('Classification error:', error);
+                throw error;
+            }
+        }
+
+        // Handle form submission
+        document.getElementById('classificationForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const text = document.getElementById('medicalText').value;
+            if (!text.trim()) return;
+            
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalBtnText = submitBtn.innerHTML;
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm loading-spinner" role="status"></span> Analyzing with AI...';
+            
+            // Hide previous results
+            document.getElementById('resultCard').style.display = 'none';
+            
+            try {
+                const result = await classifyText(text);
+                
+                // Display results - just show the specialty class (trim any whitespace)
+                const specialtyName = result.specialty ? result.specialty.trim() : 'Unknown';
+                
+                // Set specialty with simplified approach
+                const specialtyElement = document.getElementById('predictedSpecialty');
+                if (specialtyElement) {
+                    specialtyElement.textContent = specialtyName;
+                    specialtyElement.style.display = 'inline-block';
+                }
+                
+                // Also set backup element for debugging
+                const backupElement = document.getElementById('specialtyText');
+                if (backupElement) {
+                    backupElement.textContent = specialtyName;
+                    document.getElementById('specialtyBackup').style.display = 'block';
+                }
+                
+                // Debug logging
+                console.log('Classification result:', result);
+                console.log('Specialty name set to:', specialtyName);
+                console.log('Main element text:', specialtyElement ? specialtyElement.textContent : 'Not found');
+                console.log('Backup element text:', backupElement ? backupElement.textContent : 'Not found');
+                
+                const probContainer = document.getElementById('probabilitiesContainer');
+                probContainer.innerHTML = '';
+                
+                // Show simple success message without confidence scores
+                const div = document.createElement('div');
+                div.className = 'mb-3 animate-in';
+                div.innerHTML = `
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle me-2"></i>
+                        <strong>Classification Complete!</strong> The medical text has been successfully classified using our SVM machine learning model.
+                    </div>
+                `;
+                probContainer.appendChild(div);
+                
+                document.getElementById('resultCard').style.display = 'block';
+                document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth' });
+                
+            } catch (error) {
+                // Show error message
+                const probContainer = document.getElementById('probabilitiesContainer');
+                probContainer.innerHTML = `
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        <strong>Error:</strong> ${error.message}
+                        <br><small>Make sure the FastAPI backend is running on port 8000.</small>
+                    </div>
+                `;
+                
+                document.getElementById('predictedSpecialty').textContent = 'Error';
+                document.getElementById('resultCard').style.display = 'block';
+                document.getElementById('resultCard').scrollIntoView({ behavior: 'smooth' });
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+            }
+        });
+        
+        // Handle sample text clicks
+        document.querySelectorAll('.sample-text').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const text = this.textContent.trim();
+                const textarea = document.getElementById('medicalText');
+                textarea.value = text;
+                textarea.focus();
+            });
+        });
+        
+        // Load specialties from FastAPI backend
+        async function loadSpecialties() {
+            try {
+                const response = await fetch('/api/specialties');
+                const data = await response.json();
+                
+                if (response.ok && data.specialties) {
+                    console.log(`Loaded ${data.total_count} medical specialties from FastAPI backend`);
+                } else {
+                    console.warn('Could not load specialties from backend');
+                }
+            } catch (error) {
+                console.warn('Backend not available for specialties:', error.message);
+            }
+        }
+        
+        // Load specialties on page load
+        loadSpecialties();
+        
+        // Add backend status indicator
+        function addStatusIndicator() {
+            const container = document.querySelector('.container');
+            const statusDiv = document.createElement('div');
+            statusDiv.id = 'backendStatus';
+            statusDiv.className = 'alert alert-info mb-4';
+            statusDiv.innerHTML = `
+                <i class="fas fa-robot me-2"></i>
+                <strong>AI-Powered Classification:</strong> This classifier uses a trained SVM machine learning model.
+                <span id="statusIndicator" class="badge bg-secondary ms-2">Checking connection...</span>
+            `;
+            container.insertBefore(statusDiv, container.firstChild);
+            
+            // Check backend status
+            fetch('/api/health')
+                .then(response => response.json())
+                .then(data => {
+                    const indicator = document.getElementById('statusIndicator');
+                    if (data.fastapi_status === 'healthy') {
+                        indicator.className = 'badge bg-success ms-2';
+                        indicator.textContent = 'Backend Online';
+                    } else {
+                        indicator.className = 'badge bg-warning ms-2';
+                        indicator.textContent = 'Backend Offline';
+                    }
+                })
+                .catch(() => {
+                    const indicator = document.getElementById('statusIndicator');
+                    indicator.className = 'badge bg-danger ms-2';
+                    indicator.textContent = 'Connection Error';
+                });
+        }
+        
+        addStatusIndicator();
+    });
+</script>
+{% endblock %} 

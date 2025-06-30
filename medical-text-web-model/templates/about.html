@@ -1,0 +1,325 @@
+{% extends "base.html" %}
+
+{% block title %}About - MedClassify{% endblock %}
+
+{% block additional_css %}
+/* Enhanced pure CSS for about page */
+.about-header {
+    background: linear-gradient(135deg, #e0e7ff 0%, #f1f5f9 100%);
+    padding: 3rem 0;
+    margin-bottom: 3rem;
+    border-radius: 24px;
+    box-shadow: 0 4px 24px rgba(37,99,235,0.08);
+}
+.section-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    text-align: center;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.feature-card {
+    height: 100%;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.08);
+    background: white;
+    overflow: hidden;
+    transition: box-shadow 0.3s, transform 0.3s;
+    margin-bottom: 24px;
+}
+.feature-card:hover {
+    box-shadow: 0 8px 32px rgba(37,99,235,0.12);
+    transform: translateY(-4px) scale(1.01);
+}
+.feature-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: transform 0.3s;
+}
+.feature-card:hover .feature-icon {
+    transform: scale(1.1);
+}
+.tech-badge {
+    padding: 0.75rem 1.5rem;
+    margin: 0.5rem;
+    border-radius: 20px;
+    font-weight: 500;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    color: white;
+    border: none;
+    transition: box-shadow 0.3s, transform 0.3s;
+    display: inline-block;
+}
+.tech-badge:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+.team-member {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+.team-member img {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    margin-bottom: 1rem;
+    border: 3px solid #2563eb;
+    padding: 5px;
+}
+.timeline {
+    position: relative;
+    padding: 2rem 0;
+}
+.timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 2px;
+    height: 100%;
+    background: linear-gradient(to bottom, #2563eb, #1e40af);
+}
+.timeline-item {
+    margin-bottom: 3rem;
+    position: relative;
+}
+.timeline-content {
+    width: calc(50% - 30px);
+    padding: 1.5rem;
+    border-radius: 12px;
+    background: white;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.08);
+    position: relative;
+    transition: box-shadow 0.3s, transform 0.3s;
+}
+.timeline-content:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+.timeline-item:nth-child(odd) .timeline-content {
+    margin-left: auto;
+}
+.timeline-content::before {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    border-radius: 50%;
+    top: 50%;
+    transform: translateY(-50%);
+}
+.timeline-item:nth-child(odd) .timeline-content::before {
+    left: -40px;
+}
+.timeline-item:nth-child(even) .timeline-content::before {
+    right: -40px;
+}
+.timeline-date {
+    font-size: 0.9rem;
+    color: #6b7280;
+    margin-bottom: 0.5rem;
+}
+.contact-info {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.08);
+}
+.contact-method {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border-radius: 8px;
+    transition: background 0.3s, transform 0.3s;
+}
+.contact-method:hover {
+    background: #e0e7ff;
+    transform: translateX(10px);
+}
+.contact-icon {
+    font-size: 1.5rem;
+    margin-right: 1rem;
+    color: #2563eb;
+}
+@media (max-width: 600px) {
+    .about-header {
+        padding: 1.5rem 0;
+        border-radius: 12px;
+    }
+    .section-title {
+        font-size: 1.5rem;
+    }
+    .feature-card {
+        border-radius: 10px;
+        margin-bottom: 16px;
+    }
+    .team-member img {
+        width: 90px;
+        height: 90px;
+    }
+    .timeline-content {
+        width: 100%;
+        padding: 1rem;
+    }
+    .contact-info {
+        padding: 1rem;
+    }
+}
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <!-- Header -->
+    <header class="about-header text-center">
+        <h1 class="section-title">About MedClassify</h1>
+        <p class="lead mb-0">Revolutionizing medical text classification with intelligent analysis</p>
+    </header>
+
+    <!-- Features -->
+    <section class="mb-5">
+        <h2 class="text-center mb-4">Key Features</h2>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card feature-card">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3 class="h4 mb-3">Intelligent Analysis</h3>
+                        <p class="text-muted">Advanced keyword-based classification system for accurate medical specialty identification.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-card">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-bar"></i>
+                        </div>
+                        <h3 class="h4 mb-3">Detailed Results</h3>
+                        <p class="text-muted">Comprehensive probability distribution across different medical specialties.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card feature-card">
+                    <div class="card-body text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h3 class="h4 mb-3">Responsive Design</h3>
+                        <p class="text-muted">Seamless experience across all devices with modern, intuitive interface.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Technology Stack -->
+    <section class="mb-5">
+        <div class="card">
+            <div class="card-body">
+                <h2 class="text-center mb-4">Technology Stack</h2>
+                <div class="text-center">
+                    <span class="tech-badge"><i class="fab fa-python me-2"></i>Python</span>
+                    <span class="tech-badge"><i class="fab fa-flask me-2"></i>Flask</span>
+                    <span class="tech-badge"><i class="fab fa-bootstrap me-2"></i>Bootstrap</span>
+                    <span class="tech-badge"><i class="fab fa-js me-2"></i>JavaScript</span>
+                    <span class="tech-badge"><i class="fab fa-html5 me-2"></i>HTML5</span>
+                    <span class="tech-badge"><i class="fab fa-css3-alt me-2"></i>CSS3</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Meet the Team -->
+    <section class="mb-5">
+        <h2 class="text-center mb-4">Group 11 Team</h2>
+        <div class="row justify-content-center mb-4">
+            <div class="col-md-4">
+                <div class="team-member">
+                    <img src="https://www.gravatar.com/avatar/?d=mp&s=150" alt="YUUSUF AHMED YUUSUF" class="w-32 h-32 rounded-full border-4 border-blue-500 mb-4">
+                    <h5 class="font-semibold text-lg mb-1">YUUSUF AHMED YUUSUF</h5>
+                    <p class="text-muted">Supervisor</p>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="team-member">
+                    <img src="https://www.gravatar.com/avatar/?d=mp&s=150" alt="Zakarie Mahamed" class="w-32 h-32 rounded-full border-4 border-blue-500 mb-4">
+                    <h5 class="font-semibold text-lg mb-1">Zakarie Mahamed</h5>
+                    
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="team-member">
+                    <img src="https://www.gravatar.com/avatar/?d=mp&s=150" alt="Ibrahim Mahamud" class="w-32 h-32 rounded-full border-4 border-blue-500 mb-4">
+                    <h5 class="font-semibold text-lg mb-1">Ibrahim Mahamud</h5>
+                    
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="team-member">
+                    <img src="https://www.gravatar.com/avatar/?d=mp&s=150" alt="Furqan Farhan" class="w-32 h-32 rounded-full border-4 border-blue-500 mb-4">
+                    <h5 class="font-semibold text-lg mb-1">Furqan Farhan</h5>
+                    
+                </div>
+            </div>
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="team-member">
+                    <img src="https://www.gravatar.com/avatar/?d=mp&s=150" alt="Lul Abdulle" class="w-32 h-32 rounded-full border-4 border-blue-500 mb-4">
+                    <h5 class="font-semibold text-lg mb-1">Lul Abdulle</h5>
+                    
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Information -->
+    <section class="mb-5">
+        <h2 class="text-center mb-4">Get in Touch</h2>
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="contact-info">
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <h4 class="h5 mb-1">Email</h4>
+                            <p class="mb-0">contact@sakariyeilix@gmail.com</p>
+                        </div>
+                    </div>
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="fab fa-github"></i>
+                        </div>
+                        <div>
+                            <h4 class="h5 mb-1">GitHub</h4>
+                            <p class="mb-0">github.com/ibrahimaddow</p>
+                        </div>
+                    </div>
+                    <div class="contact-method">
+                        <div class="contact-icon">
+                            <i class="fas fa-comment"></i>
+                        </div>
+                        <div>
+                            <h4 class="h5 mb-1">Support</h4>
+                            <p class="mb-0">Visit our support portal for assistance</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %} 
