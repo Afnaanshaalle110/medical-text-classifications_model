@@ -15,6 +15,14 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectKBest, chi2
 from sklearn.svm import LinearSVC
 
+# Global variable to track classification progress
+classification_progress = {
+    "status": "idle",  # idle, processing, complete, error
+    "progress": 0,     # 0-100
+    "message": "",     # Current step description
+    "error": None      # Error message if any
+}
+
 # Download required NLTK data (optional)
 try:
     import nltk
@@ -152,6 +160,20 @@ class PredictionResponse(BaseModel):
     specialty: str
     confidence: float = None
 
+class ProgressResponse(BaseModel):
+    status: str
+    progress: int
+    message: str
+    error: str = None
+
+def update_progress(status: str, progress: int, message: str, error: str = None):
+    """Update the global progress tracker"""
+    global classification_progress
+    classification_progress["status"] = status
+    classification_progress["progress"] = progress
+    classification_progress["message"] = message
+    classification_progress["error"] = error
+
 @app.get("/")
 async def welcome():
     return {
@@ -174,6 +196,11 @@ async def get_specialties():
         "note": "These are the medical specialties the model can classify"
     }
 
+@app.get("/progress", response_model=ProgressResponse)
+async def get_progress():
+    """Get the current classification progress"""
+    return classification_progress
+
 @app.post("/predict/", response_model=PredictionResponse)
 async def predict_specialty(input_data: TextInput) -> PredictionResponse:
     if not model_loaded:
@@ -183,32 +210,35 @@ async def predict_specialty(input_data: TextInput) -> PredictionResponse:
         raise HTTPException(status_code=400, detail="Text input cannot be empty")
     
     try:
+        # Reset progress
+        update_progress("processing", 0, "Starting text classification...")
+        
         # Step 1: Clean the text using the same function as training
+        update_progress("processing", 20, "Cleaning and preprocessing text...")
         cleaned_text = clean_text(input_data.text)
         print(f"Original text length: {len(input_data.text)}")
         print(f"Cleaned text length: {len(cleaned_text)}")
         print(f"Cleaned text preview: {cleaned_text[:100]}...")
         
         if not cleaned_text.strip():
+            update_progress("error", 0, "Error: Text becomes empty after cleaning")
             raise HTTPException(status_code=400, detail="Text becomes empty after cleaning")
         
         # Step 2: Transform with TF-IDF vectorizer (trained)
+        update_progress("processing", 40, "Applying TF-IDF transformation...")
         text_tfidf = tfidf_vectorizer.transform([cleaned_text])
         print(f"TF-IDF shape: {text_tfidf.shape}")
         
         # Step 3: Handle feature dimension mismatch
-        # The model was trained with 3000 features, but TF-IDF gives us 10000
-        # We need to either use feature selection or truncate/pad
+        update_progress("processing", 60, "Selecting features...")
         if feature_selector and text_tfidf.shape[1] >= 3000:
             text_selected = feature_selector.transform(text_tfidf)
             print(f"Selected features shape: {text_selected.shape}")
         else:
-            # Truncate to first 3000 features if we have more, or pad if we have less
             if text_tfidf.shape[1] >= 3000:
                 text_selected = text_tfidf[:, :3000]
                 print(f"Truncated to 3000 features: {text_selected.shape}")
             else:
-                # Pad with zeros if we have fewer features
                 import scipy.sparse as sp
                 padding_size = 3000 - text_tfidf.shape[1]
                 padding = sp.csr_matrix((text_tfidf.shape[0], padding_size))
@@ -216,6 +246,7 @@ async def predict_specialty(input_data: TextInput) -> PredictionResponse:
                 print(f"Padded to 3000 features: {text_selected.shape}")
         
         # Step 4: Make prediction with SVM model
+        update_progress("processing", 80, "Making prediction...")
         prediction = svm_model.predict(text_selected)
         print(f"Raw prediction: {prediction}")
         
@@ -232,10 +263,8 @@ async def predict_specialty(input_data: TextInput) -> PredictionResponse:
             if 0 <= predicted_class_idx < len(CLASS_LABELS):
                 specialty = CLASS_LABELS[predicted_class_idx]
             else:
-                # If index is out of range, return the raw prediction
                 specialty = f"Class_{predicted_class_idx}"
         else:
-            # If prediction is already a string (class name)
             specialty = str(predicted_class_idx)
         
         print(f"Final specialty: {specialty}")
@@ -246,27 +275,19 @@ async def predict_specialty(input_data: TextInput) -> PredictionResponse:
             try:
                 decision_scores = svm_model.decision_function(text_selected)
                 if hasattr(decision_scores, 'shape') and len(decision_scores.shape) > 1:
-                    # Multi-class case
                     confidence = float(np.max(decision_scores))
                 else:
-                    # Binary case or single score
-                    confidence = float(abs(decision_scores[0]) if hasattr(decision_scores, '__getitem__') else abs(decision_scores))
-                
-                # Normalize confidence to 0-1 range
-                confidence = min(1.0, max(0.0, (confidence + 1) / 2))
-                print(f"Confidence: {confidence}")
+                    confidence = float(decision_scores[0])
             except Exception as e:
                 print(f"Could not calculate confidence: {e}")
-                confidence = None
-        
-        return PredictionResponse(
-            specialty=specialty.strip(),  # Remove leading/trailing spaces for display
-            confidence=confidence
-        )
+
+        update_progress("complete", 100, "Classification complete!")
+        return PredictionResponse(specialty=specialty, confidence=confidence)
         
     except Exception as e:
-        print(f"Prediction error: {e}")
-        raise HTTPException(status_code=500, detail=f"Prediction error: {str(e)}")
+        error_msg = f"Classification error: {str(e)}"
+        update_progress("error", 0, error_msg)
+        raise HTTPException(status_code=500, detail=error_msg)
 
 @app.get("/health")
 async def health_check():
