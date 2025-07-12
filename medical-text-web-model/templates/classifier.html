@@ -214,7 +214,7 @@ strong#predictedSpecialty {
 }
 .confidence-bar {
     height: 100%;
-    width: 78%;
+    width: 78%; /* This will be set dynamically by JS */
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
     border-radius: 12px;
     display: flex;
@@ -226,8 +226,9 @@ strong#predictedSpecialty {
     transition: width 0.8s ease;
     position: relative;
 }
+/* Remove the hardcoded ::after content and use JS to set the text */
 .confidence-bar::after {
-    content: "78%";
+    content: attr(data-confidence);
     position: absolute;
     left: 50%;
     top: 50%;
@@ -235,6 +236,41 @@ strong#predictedSpecialty {
     color: white;
     font-weight: 600;
     text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+/* Error state styles */
+.error-state {
+    background: #fef2f2;
+    border-radius: 8px;
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.error-icon {
+    font-size: 2.5rem;
+    color: #ef4444;
+    margin-bottom: 1rem;
+}
+
+.error-title {
+    font-size: 1.25rem;
+    color: #b91c1c;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.error-message {
+    color: #7f1d1d;
+    margin-bottom: 1rem;
+}
+
+.error-suggestion {
+    background: #fff;
+    border-radius: 6px;
+    padding: 1rem;
+    margin-top: 1rem;
+    font-size: 0.95rem;
+    color: #374151;
+    border: 1px solid #fecaca;
 }
 {% endblock %}
 
@@ -270,22 +306,38 @@ strong#predictedSpecialty {
             </h5>
         </div>
         <div class="card-body">
+            <!-- Success State -->
+            <div id="successState">
             <h4 class="mb-4">Predicted Specialty: 
                 <strong id="predictedSpecialty" style="color: #10B981; font-size: 1.3em; background: #f0f9f5; padding: 8px 16px; border-radius: 6px; border: 2px solid #10B981;">Not classified yet</strong>
             </h4>
             
-            <div class="confidence-section">
-                <div class="confidence-label">
-                    <i class="fas fa-chart-line"></i>
-                    Model Accuracy
-                </div>
-                <div class="confidence-progress">
-                    <div class="confidence-bar"></div>
+                <div class="confidence-section">
+                    <div class="confidence-label">
+                        <i class="fas fa-chart-line"></i>
+                        Model Confidence
+                    </div>
+                    <div class="confidence-progress">
+                        <div class="confidence-bar" id="confidenceBar"></div>
+                    </div>
                 </div>
             </div>
             
-            <div id="specialtyBackup" style="display: none; margin-bottom: 1rem;">
-                <p class="text-success"><strong>Debug - Specialty detected:</strong> <span id="specialtyText">N/A</span></p>
+            <!-- Error State -->
+            <div id="errorState" class="error-state" style="display: none;">
+                <div class="error-icon">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="error-title">Invalid Input Detected</div>
+                <div class="error-message" id="errorMessage"></div>
+                <div class="error-suggestion">
+                    <strong>Examples of medical text:</strong>
+                    <ul class="mt-2 text-left">
+                        <li>Patient presents with fever and cough</li>
+                        <li>Post-operative examination shows good healing</li>
+                        <li>Blood pressure reading: 120/80 mmHg</li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
@@ -295,6 +347,34 @@ strong#predictedSpecialty {
 {% block additional_scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const resultCard = document.getElementById('resultCard');
+        const successState = document.getElementById('successState');
+        const errorState = document.getElementById('errorState');
+        const errorMessage = document.getElementById('errorMessage');
+        const confidenceBar = document.getElementById('confidenceBar');
+
+        function showError(message) {
+            resultCard.style.display = 'block';
+            successState.style.display = 'none';
+            errorState.style.display = 'block';
+            errorMessage.textContent = message;
+            resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        function showSuccess(specialty, confidence) {
+            resultCard.style.display = 'block';
+            successState.style.display = 'block';
+            errorState.style.display = 'none';
+            document.getElementById('predictedSpecialty').textContent = specialty;
+            
+            // Update confidence bar
+            const confidencePercentage = Math.round((confidence || 0) * 100);
+            confidenceBar.style.width = `${confidencePercentage}%`;
+            confidenceBar.setAttribute('data-confidence', `${confidencePercentage}%`);
+            
+            resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
         // Handle form submission
         document.getElementById('classificationForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -312,25 +392,21 @@ strong#predictedSpecialty {
                 const data = await response.json();
                 
                 if (!response.ok) {
-                    throw new Error(data.detail || data.error || 'Classification failed');
+                    showError(data.detail || 'Classification failed');
+                    return;
                 }
-                
-                // Update specialty display
-                document.getElementById('predictedSpecialty').textContent = data.specialty;
-                document.getElementById('specialtyText').textContent = data.specialty;
-                
-                // Show result card with animation
-                const resultCard = document.getElementById('resultCard');
-                resultCard.style.display = 'block';
-                
-                // Scroll to result section smoothly
-                resultCard.scrollIntoView({ 
-                    behavior: 'smooth',
-                    block: 'center'
-                });
+
+                /* Commented out low-confidence threshold check to avoid false invalid errors
+                if (data.confidence !== null && data.confidence < 0.3) {
+                    showError('Text not recognized as valid medical transcription. Please enter valid medical text.');
+                    return;
+                }
+                */
+
+                showSuccess(data.specialty, data.confidence || 0);
                 
             } catch (error) {
-                alert('Classification failed: ' + error.message);
+                showError('An error occurred during classification. Please try again.');
             }
         });
     });

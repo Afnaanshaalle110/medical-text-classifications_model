@@ -225,10 +225,12 @@ async def predict_specialty(input_data: TextInput) -> PredictionResponse:
             raise HTTPException(status_code=400, detail="Text becomes empty after cleaning")
         
         # Step 2: Transform with TF-IDF vectorizer (trained)
-        update_progress("processing", 40, "Applying TF-IDF transformation...")
         text_tfidf = tfidf_vectorizer.transform([cleaned_text])
         print(f"TF-IDF shape: {text_tfidf.shape}")
-        
+        # If no known TF-IDF features, treat as invalid medical transcription
+        if hasattr(text_tfidf, 'nnz') and text_tfidf.nnz == 0:
+            raise HTTPException(status_code=400, detail="Text not recognized as valid medical transcription")
+
         # Step 3: Handle feature dimension mismatch
         update_progress("processing", 60, "Selecting features...")
         if feature_selector and text_tfidf.shape[1] >= 3000:
@@ -275,9 +277,11 @@ async def predict_specialty(input_data: TextInput) -> PredictionResponse:
             try:
                 decision_scores = svm_model.decision_function(text_selected)
                 if hasattr(decision_scores, 'shape') and len(decision_scores.shape) > 1:
-                    confidence = float(np.max(decision_scores))
+                    score = float(np.max(decision_scores))
                 else:
-                    confidence = float(decision_scores[0])
+                    score = float(decision_scores[0])
+                # Convert raw score to probability-like value using sigmoid
+                confidence = 1 / (1 + np.exp(-score))
             except Exception as e:
                 print(f"Could not calculate confidence: {e}")
 
