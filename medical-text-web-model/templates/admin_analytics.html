@@ -1,0 +1,213 @@
+{% extends "base.html" %}
+{% block title %}View Analytics{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="section-title">View Analytics</h2>
+    <p class="text-muted text-center mb-4">Here you can find insights into application usage and performance.</p>
+
+    <!-- Summary Cards -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-center shadow-lg animate-in">
+                <div class="card-body">
+                    <h3 class="text-primary">{{ analytics.total_users }}</h3>
+                    <p class="card-text">Total Users</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-center shadow-lg animate-in">
+                <div class="card-body">
+                    <h3 class="text-success">{{ analytics.total_classifications }}</h3>
+                    <p class="card-text">Total Classifications</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-center shadow-lg animate-in">
+                <div class="card-body">
+                    <h3 class="text-info">{{ analytics.specialty_stats|length }}</h3>
+                    <p class="card-text">Specialties Used</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-3">
+            <div class="card text-center shadow-lg animate-in">
+                <div class="card-body">
+                    <h3 class="text-warning">{{ analytics.user_activity|length }}</h3>
+                    <p class="card-text">Active Users</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Specialty Statistics -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-8">
+            <div class="card shadow-lg animate-in">
+                <div class="card-header">
+                    <h5 class="mb-0">Top Medical Specialties</h5>
+                </div>
+                <div class="card-body">
+                    {% if analytics.specialty_stats %}
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Specialty</th>
+                                        <th>Count</th>
+                                        <th>Percentage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for specialty in analytics.specialty_stats %}
+                                    <tr>
+                                        <td>{{ specialty._id }}</td>
+                                        <td>{{ specialty.count }}</td>
+                                        <td>{{ "%.1f"|format(specialty.count / analytics.total_classifications * 100) }}%</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center">No classification data available yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-lg-4">
+            <div class="card shadow-lg animate-in">
+                <div class="card-header">
+                    <h5 class="mb-0">Recent Activity</h5>
+                </div>
+                <div class="card-body">
+                    {% if analytics.recent_classifications %}
+                        <div class="list-group list-group-flush">
+                            {% for classification in analytics.recent_classifications[:5] %}
+                            <div class="list-group-item">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <small class="text-muted">{{ classification.timestamp.strftime('%Y-%m-%d %H:%M') }}</small>
+                                        <div class="fw-bold">{{ classification.predicted_specialty }}</div>
+                                    </div>
+                                    <span class="badge bg-primary">{{ classification.input_text[:30] }}...</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center">No recent activity.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Daily Statistics Chart -->
+    <div class="row g-4">
+        <div class="col-12">
+            <div class="card shadow-lg animate-in">
+                <div class="card-header">
+                    <h5 class="mb-0">Daily Classification Activity (Last 7 Days)</h5>
+                </div>
+                <div class="card-body">
+                    {% if analytics.daily_stats %}
+                        <div class="row">
+                            {% for day in analytics.daily_stats %}
+                            <div class="col-md-2 col-4 mb-3">
+                                <div class="text-center">
+                                    <div class="h4 text-primary">{{ day.count }}</div>
+                                    <small class="text-muted">{{ day._id }}</small>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted text-center">No daily activity data available.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- User Activity -->
+    {% if analytics.user_activity %}
+    <div class="row g-4 mt-4">
+        <div class="col-12">
+            <div class="card shadow-lg animate-in">
+                <div class="card-header">
+                    <h5 class="mb-0">Most Active Users</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>User ID</th>
+                                    <th>Classifications</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for user in analytics.user_activity %}
+                                <tr>
+                                    <td>{{ user._id }}</td>
+                                    <td>{{ user.count }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+<style>
+.animate-in {
+    animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+}
+
+.card-header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px 15px 0 0 !important;
+}
+
+.table th {
+    border-top: none;
+    font-weight: 600;
+    color: #495057;
+}
+
+.list-group-item {
+    border: none;
+    border-bottom: 1px solid #f8f9fa;
+}
+
+.list-group-item:last-child {
+    border-bottom: none;
+}
+</style>
+{% endblock %} 

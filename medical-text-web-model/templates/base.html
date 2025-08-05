@@ -152,18 +152,6 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'classifier' %}active{% endif %}" 
-                           href="{{ url_for('classifier') }}">
-                           <i class="fas fa-brain me-1"></i>Classifier
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.endpoint == 'specialties' %}active{% endif %}" 
-                           href="{{ url_for('specialties') }}">
-                           <i class="fas fa-stethoscope me-1"></i>Specialties
-                        </a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link {% if request.endpoint == 'about' %}active{% endif %}" 
                            href="{{ url_for('about') }}">
                            <i class="fas fa-info-circle me-1"></i>About
@@ -175,10 +163,66 @@
                            <i class="fas fa-image me-1"></i>Docimages
                         </a>
                     </li>
+                    {% if current_user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'classifier' %}active{% endif %}" 
+                           href="{{ url_for('classifier') }}">
+                           <i class="fas fa-brain me-1"></i>Classifier
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.endpoint == 'specialties' %}active{% endif %}" 
+                           href="{{ url_for('specialties') }}">
+                           <i class="fas fa-stethoscope me-1"></i>Specialties
+                        </a>
+                    </li>
+                        {% if current_user.has_role('admin') %}
+                            <li class="nav-item">
+                                <a class="nav-link {% if request.endpoint == 'admin_dashboard' %}active{% endif %}" 
+                                   href="{{ url_for('admin_dashboard') }}">
+                                   <i class="fas fa-user-shield me-1"></i>Admin
+                                </a>
+                            </li>
+                        {% endif %}
+                        <li class="nav-item">
+                            <span class="nav-link text-white">Hello, {{ current_user.username }}</span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ url_for('logout') }}">
+                                <i class="fas fa-sign-out-alt me-1"></i>Logout
+                            </a>
+                        </li>
+                    {% else %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'login' %}active{% endif %}" 
+                               href="{{ url_for('login') }}">
+                               <i class="fas fa-sign-in-alt me-1"></i>Login
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.endpoint == 'register' %}active{% endif %}" 
+                               href="{{ url_for('register') }}">
+                               <i class="fas fa-user-plus me-1"></i>Register
+                            </a>
+                        </li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
     </nav>
+
+    <div class="container">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
 
     {% block content %}{% endblock %}
 
@@ -210,7 +254,7 @@
                 </div>
             </div>
             <hr class="mt-4 mb-3 border-white opacity-25">
-            <p class="text-center mb-0">© 2023 MedClassify. All rights reserved.</p>
+            <p class="text-center mb-0">© 2025 MedClassify. All rights reserved.</p>
         </div>
     </footer>
 

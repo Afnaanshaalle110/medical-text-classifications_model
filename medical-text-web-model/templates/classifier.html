@@ -375,10 +375,26 @@ strong#predictedSpecialty {
             resultCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
 
-        // Handle form submission
+        let lastClassifiedText = '';
+        let lastResult = null;
+        let lastWasError = false;
         document.getElementById('classificationForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-            const medicalText = document.getElementById('medicalText').value;
+            const medicalText = document.getElementById('medicalText').value.trim();
+
+            // Only classify if input has changed
+            if (medicalText === lastClassifiedText) {
+                // Show the previous result instantly (no API call)
+                if (lastWasError && lastResult) {
+                    showError(lastResult);
+                } else if (lastResult) {
+                    showSuccess(lastResult.specialty, lastResult.confidence || 0);
+                }
+                return;
+            }
+            lastClassifiedText = medicalText;
+            lastResult = null;
+            lastWasError = false;
             
             try {
                 const response = await fetch('/api/predict', {
@@ -393,20 +409,19 @@ strong#predictedSpecialty {
                 
                 if (!response.ok) {
                     showError(data.detail || 'Classification failed');
+                    lastResult = data.detail || 'Classification failed';
+                    lastWasError = true;
                     return;
                 }
-
-                /* Commented out low-confidence threshold check to avoid false invalid errors
-                if (data.confidence !== null && data.confidence < 0.3) {
-                    showError('Text not recognized as valid medical transcription. Please enter valid medical text.');
-                    return;
-                }
-                */
 
                 showSuccess(data.specialty, data.confidence || 0);
+                lastResult = data;
+                lastWasError = false;
                 
             } catch (error) {
                 showError('An error occurred during classification. Please try again.');
+                lastResult = 'An error occurred during classification. Please try again.';
+                lastWasError = true;
             }
         });
     });

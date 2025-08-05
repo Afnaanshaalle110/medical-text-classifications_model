@@ -152,6 +152,25 @@ CLASS_LABELS = [
     ' Urology',
 ]
 
+# Add this after stop_words definition
+MEDICAL_KEYWORDS = set([
+    'patient', 'doctor', 'nurse', 'hospital', 'clinic', 'treatment', 'diagnosis', 'symptom', 'surgery',
+    'medication', 'prescription', 'therapy', 'blood', 'pressure', 'temperature', 'pain', 'disease',
+    'discharge', 'admission', 'examination', 'operation', 'cardiology', 'neurology', 'radiology',
+    'orthopedic', 'oncology', 'gynecology', 'pediatrics', 'dermatology', 'consult', 'report', 'summary',
+    'history', 'vital', 'sign', 'allergy', 'injury', 'fracture', 'infection', 'cancer', 'diabetes',
+    'asthma', 'hypertension', 'pulse', 'respiratory', 'renal', 'liver', 'kidney', 'urine', 'xray', 'ct',
+    'mri', 'ultrasound', 'biopsy', 'lab', 'test', 'result', 'findings', 'assessment', 'plan', 'followup',
+    'review', 'impression', 'note', 'chart', 'progress', 'consultation', 'referral', 'specialty', 'procedure'
+])
+
+def is_medical_text(text):
+    """
+    Returns True if the cleaned text contains any medical keywords, False otherwise.
+    """
+    words = set(text.lower().split())
+    return any(word in MEDICAL_KEYWORDS for word in words)
+
 # Pydantic models
 class TextInput(BaseModel):
     text: str
@@ -219,6 +238,11 @@ async def predict_specialty(input_data: TextInput) -> PredictionResponse:
         print(f"Original text length: {len(input_data.text)}")
         print(f"Cleaned text length: {len(cleaned_text)}")
         print(f"Cleaned text preview: {cleaned_text[:100]}...")
+        
+        # Reject if not medical text
+        if not is_medical_text(cleaned_text):
+            update_progress("error", 0, f"Input not recognized as medical text: {input_data.text}")
+            raise HTTPException(status_code=400, detail=f"The text you entered ('{input_data.text}') does not appear to be a valid medical transcription.")
         
         if not cleaned_text.strip():
             update_progress("error", 0, "Error: Text becomes empty after cleaning")

@@ -147,6 +147,38 @@
     color: #fff;
     transform: translateY(-2px);
 }
+.auth-card {
+    height: 100%;
+    border: none;
+    border-radius: 16px;
+    box-shadow: 0 4px 16px rgba(37,99,235,0.08);
+    background: white;
+    overflow: hidden;
+    transition: box-shadow 0.3s, transform 0.3s;
+    margin-bottom: 24px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+    text-align: center;
+}
+.auth-card:hover {
+    box-shadow: 0 8px 32px rgba(37,99,235,0.12);
+    transform: translateY(-4px) scale(1.01);
+}
+.auth-icon {
+    font-size: 3rem;
+    margin-bottom: 1.5rem;
+    background: linear-gradient(135deg, #2563eb, #1e40af);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    transition: transform 0.3s;
+}
+.auth-card:hover .auth-icon {
+    transform: scale(1.1);
+}
+
 @media (max-width: 600px) {
     .hero {
         padding: 2rem 0 1.5rem 0;
@@ -331,4 +363,35 @@
         </a>
     </div>
 </section>
+{% if not current_user.is_authenticated %}
+<section class="container mt-5 mb-5">
+    <h2 class="section-title text-center">Get Started</h2>
+    <p class="section-subtitle text-center">Login or Register to access all features.</p>
+
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('login') }}" class="text-decoration-none d-block">
+                <div class="card auth-card">
+                    <div class="auth-icon">
+                        <i class="fas fa-sign-in-alt"></i>
+                    </div>
+                    <h3 class="h4 mb-2">Login</h3>
+                    <p class="text-muted mb-0">Already have an account? Log in here.</p>
+                </div>
+            </a>
+        </div>
+        <div class="col-md-6 col-lg-4">
+            <a href="{{ url_for('register') }}" class="text-decoration-none d-block">
+                <div class="card auth-card">
+                    <div class="auth-icon">
+                        <i class="fas fa-user-plus"></i>
+                    </div>
+                    <h3 class="h4 mb-2">Register</h3>
+                    <p class="text-muted mb-0">New user? Create an account to get started.</p>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+{% endif %}
 {% endblock %} 
