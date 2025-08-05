@@ -113,6 +113,33 @@ def admin_users():
     users = list(mongo.db.users.find())
     return render_template('admin_users.html', current_user=current_user, users=users)
 
+@app.route('/admin/users/edit/<user_id>', methods=['GET', 'POST'])
+@login_required
+@admin_required
+def admin_edit_user(user_id):
+    user = mongo.db.users.find_one({'_id': ObjectId(user_id)})
+    if not user:
+        flash('User not found.', 'danger')
+        return redirect(url_for('admin_users'))
+    if request.method == 'POST':
+        username = request.form.get('username')
+        roles = request.form.getlist('roles')
+        mongo.db.users.update_one(
+            {'_id': ObjectId(user_id)},
+            {'$set': {'username': username, 'roles': roles}}
+        )
+        flash('User updated successfully.', 'success')
+        return redirect(url_for('admin_users'))
+    return render_template('admin_edit_user.html', user=user, current_user=current_user)
+
+@app.route('/admin/users/delete/<user_id>', methods=['POST'])
+@login_required
+@admin_required
+def admin_delete_user(user_id):
+    mongo.db.users.delete_one({'_id': ObjectId(user_id)})
+    flash('User deleted successfully.', 'success')
+    return redirect(url_for('admin_users'))
+
 @app.route('/admin/analytics')
 @login_required
 @admin_required
