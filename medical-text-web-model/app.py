@@ -19,7 +19,7 @@ load_dotenv()
 # MongoDB Configuration
 try:
     # Try to get MongoDB URI from environment
-    mongo_uri = os.getenv("MONGO_URI", "mongodb://localhost:27017/medical_text_classifier")
+    mongo_uri = os.getenv("MONGO_URI", "mongodb+srv://medical:QhwA0wQYVOoTwiB2@cluster0.bqplbnl.mongodb.net/MTT_classification?retryWrites=true&w=majority")
     
     # If it's a MongoDB Atlas URI, add SSL configuration
     if "mongodb.net" in mongo_uri:
@@ -41,13 +41,13 @@ except Exception as e:
     print("🔄 Falling back to local MongoDB...")
     
     # Fallback to local MongoDB
-    app.config["MONGO_URI"] = "mongodb://localhost:27017/medical_text_classifier"
+    app.config["MONGO_URI"] = "mongodb+srv://medical:QhwA0wQYVOoTwiB2@cluster0.bqplbnl.mongodb.net/MTT_classification?retryWrites=true&w=majority"
     mongo = PyMongo(app)
     
     try:
         # Test local connection
         mongo.db.command('ping')
-        print("✅ Local MongoDB connected successfully")
+        print("✅ MongoDB Atlas connected successfully")
     except Exception as local_error:
         print(f"❌ Local MongoDB also failed: {local_error}")
         print("💡 Please ensure MongoDB is running locally or check your Atlas connection")
@@ -452,6 +452,8 @@ def health_check():
         })
 
 if __name__ == '__main__':
-    app.run(debug=True, port=5010) 
+    app.run(debug=True, port=5010)
 
-   
+# Install uvicorn for ASGI support
+# pip install uvicorn
+

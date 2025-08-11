@@ -5,10 +5,10 @@ uvicorn
 pydantic==2.5.0
 requests==2.31.0
 joblib==1.3.2
-scikit-learn==1.3.2
+scikit-learn==1.3.2 --only-binary :all:
 nltk==3.8.1
 spacy==3.7.2
-imbalanced-learn==0.11.0 
+imbalanced-learn==0.11.0
 python-dotenv==1.0.1
 Flask-Login==0.6.3
 Flask-PyMongo==2.3.0
